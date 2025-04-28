@@ -9,7 +9,7 @@ st.set_page_config(
     layout="centered"
 )
 st.markdown("<div style='max-width: 900px; margin: auto;'>", unsafe_allow_html=True)
-st.title("💉 헤모글로빈 농도 변화 분석 대시보드")
+st.title("💉 헤모글로빈 농도 변화 분석")
 
 uploaded_file = st.file_uploader("엑셀 파일을 업로드하세요", type=["xlsx"])
 

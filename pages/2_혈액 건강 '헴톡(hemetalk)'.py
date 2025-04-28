@@ -50,7 +50,20 @@ with col1:
     caffeine_time = st.selectbox("카페인 음료를 언제 드셨나요?", ["식사 전", "식사 직후", "식후 2시간 이상 후", "섭취하지 않음"])
 
 with col2:
-    hb_input = st.number_input("헤모글로빈 수치 (g/dL):", min_value=5.0, max_value=20.0, step=0.1)
+    absorbance = st.number_input("측정 흡광도 (Abs 단위):", min_value=0.000, max_value=2.000, step=0.001, format="%.3f")
+    if absorbance > 0:
+        calculated_hb = ((absorbance + 0.016) / 7.4333) * 251
+        st.info(f"⭐ 자동 계산된 헤모글로빈 수치: {calculated_hb:.2f} g/dL")
+    else:
+        calculated_hb = None
+    st.caption("※ 흡광도를 입력하면 헤모글로빈 수치가 자동 계산됩니다.")
+    hb_input = st.number_input(
+    "헤모글로빈 수치 (g/dL):",
+    min_value=5.0,
+    max_value=20.0,
+    value=round(calculated_hb, 2) if calculated_hb is not None else 5.0,
+    step=0.1
+)
     diet_quality = st.radio("오늘 식단에 철+비타민C 조합이 있었나요?", ("예", "아니오", "모르겠음"))
 
 sleep_hours = st.slider("어젯밤 수면 시간 (시간 단위)", min_value=0, max_value=12, value=7)
@@ -81,7 +94,7 @@ if st.button("기록 저장하기"):
 # -------------------------
 # 분석 및 피드백
 st.markdown("---")
-st.subheader("\U0001F4AC 피드백 결과")
+st.subheader("💬 피드백 결과")
 
 def is_anemia(gender, hb):
     if gender == "남성":
@@ -96,18 +109,18 @@ if st.button("결과 확인"):
 
         col1, col2 = st.columns(2)
         with col1:
-            st.image("https://i.imgur.com/pZuEZn9.png", caption="훼마틴 (철분 30mg)", use_container_width=True)
+            st.image("./images/hematine.png", caption="훼마틴 (철분 30mg)", use_container_width=True)
         with col2:
-            st.image("https://i.imgur.com/SZ8kVPd.png", caption="솔가 철분제 (철분 25mg)", use_container_width=True)
+            st.image("./images/solgar.png", caption="솔가 철분제 (철분 25mg)", use_container_width=True)
 
         st.markdown("**카페인 적은 음료 추천:** (카페인 함량 기준)")
         col4, col5, col6 = st.columns(3)
         with col4:
-            st.image("https://i.imgur.com/Y2rhXFW.png", caption="보리차 (0mg)", use_container_width=True)
+            st.image("./images/barley_tea.png", caption="보리차 (0mg)", use_container_width=True)
         with col5:
-            st.image("https://i.imgur.com/qeN0j4d.png", caption="디카페인 커피 (약 3mg)", use_container_width=True)
+            st.image("./images/decaf_coffee.png", caption="디카페인 커피 (약 3mg)", use_container_width=True)
         with col6:
-            st.image("https://i.imgur.com/DU0B24Y.png", caption="두유 (약 2mg)", use_container_width=True)
+            st.image("./images/soy_milk.png", caption="두유 (약 2mg)", use_container_width=True)
 
         if caffeine == "예":
             st.info("카페인 섭취를 줄이는 것이 철분 흡수에 도움이 됩니다. 저카페인 음료로 대체해보세요!")
@@ -115,7 +128,7 @@ if st.button("결과 확인"):
             st.success("앞으로도 카페인을 줄이는 습관을 유지해보세요. 철분 흡수에 매우 좋습니다!")
 
     else:
-        st.success("\U0001f44d 정상 범위입니다. 건강을 유지하세요!")
+        st.success("👍 정상 범위입니다. 건강을 유지하세요!")
         st.markdown("**추천 건강 습관:** 철분이 풍부한 음식 섭취, 비타민 C와 함께 복용")
 
         if caffeine == "예":
